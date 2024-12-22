@@ -8,6 +8,7 @@ import productRouter from "./routes/productRoute.js"
 import cartRouter from "./routes/cartRoute.js"
 import orderRouter from "./routes/orderRoute.js"
 import reviewRouter from "./routes/reviewRoute.js"
+import contactRouter from "./routes/contactRoute.js"
 
 // app config
 const app = express()
@@ -18,7 +19,7 @@ connectCloudinary()
 
 //middlware
 app.use(express.json())
-app.use(cors())
+app.use(cors({ origin: 'http://localhost:5173' }))
 
 //api endpoints
 app.use('/api/user', userRouter)
@@ -26,6 +27,7 @@ app.use('/api/product', productRouter)
 app.use('/api/cart', cartRouter)
 app.use('/api/order', orderRouter)
 app.use('/api/reviews', reviewRouter)
+app.use('/api/contact', contactRouter);
 
 app.get('/',(req,res)=>{
     res.send("Api Working")

@@ -8,7 +8,7 @@ import RelatedProducts from '../components/RelatedProducts';
 
 export default function Product() {
   const { productId } = useParams();
-  const { products, currency, addToCart, fetchReviews, submitReview } = useContext(ShopContext);
+  const { products, currency, addToCart, fetchReviews, submitReview,getUserCart } = useContext(ShopContext);
   const [product, setProduct] = useState(null);
   const [image, setImage] = useState('');
   const [size, setSize] = useState('');
@@ -16,6 +16,7 @@ export default function Product() {
   const [newComment, setNewComment] = useState('');
   const [newRating, setNewRating] = useState(5);
   const [ratingFilter, setRatingFilter] = useState(0); 
+  const [user, setUser] = useState(null);
 
   const fetchProductData = () => {
     const selectedProduct = products.find((item) => item._id === productId);
@@ -31,26 +32,30 @@ export default function Product() {
   };
 
   const handleReviewSubmit = async () => {
+    if (!user || !user.name) {
+      return alert('You need to be logged in to submit a review.');
+    }
+    
+    if (!newComment) return alert('Please write a comment.');
+  
+    const review = {
+      productId,
+      name: user.name,
+      comment: newComment,
+      rating: newRating,
+    };
+
     try {
-      if (!newComment) return alert('Please write a comment.');
-      
-      const review = {
-        firstName: "", 
-        lastName: "",  
-        comment: newComment,
-        rating: newRating,
-      };
-  
       await submitReview(productId, review);
-  
       setNewComment('');
-      setNewRating(5); 
-  
+      setNewRating(5);
       fetchProductReviews();
     } catch (error) {
-      console.error(error.message);
+      console.error('Error submitting review: ', error);
     }
   };
+  
+  
 
   const calculateAverageRating = () => {
     if (!reviews) {
@@ -75,6 +80,15 @@ export default function Product() {
       fetchProductReviews(); 
     }
   }, [productId]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await getUserCart(); // Kullanıcı bilgisini al
+      setUser(userData); // State'e ata
+    };
+
+    fetchUser();
+  }, [getUserCart]);
 
   if (!product) {
     return <div>...Loading</div>;

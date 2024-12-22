@@ -10,7 +10,6 @@ const ShopContextProvider = (props) => {
   const delivery_charges = 10;
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const navigate = useNavigate();
-
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -18,24 +17,27 @@ const ShopContextProvider = (props) => {
   const [token, setToken] = useState("");
   const [reviews, setReviews] = useState([]);
 
+  
   const submitReview = async (productId, review) => {
     try {
       const response = await axios.post(
-        `${backendUrl}/api/reviews/submit`,
-        { productId, ...review },
-        { headers: { token } }
+        `${backendUrl}/api/reviews/submit`, 
+        { productId, ...review }, 
+        { headers: { "Content-Type": "application/json" } } 
       );
+  
       if (response.data.success) {
         toast.success("Review submitted successfully!");
-        setReviews(response.data.reviews);
+        setReviews(response.data.reviews); // Yorumları güncelle
       } else {
-        toast.error(response.data.message);
+        toast.error(response.data.message); // Hata mesajını göster
       }
     } catch (error) {
       console.error("Error submitting review:", error);
       toast.error("Failed to submit review");
     }
   };
+    
 
   const fetchReviews = async (productId) => {
     try {
@@ -84,6 +86,9 @@ const ShopContextProvider = (props) => {
   };
 
   const getCartCount = () => {
+    if (!cartItems || typeof cartItems !== 'object') {
+    return 0; 
+  }
     return Object.values(cartItems).reduce(
       (total, sizes) =>
         total +
@@ -142,10 +147,7 @@ const ShopContextProvider = (props) => {
   const getUserCart = async () => {
     if (!token) return;
     try {
-      const response = await axios.post(
-        `${backendUrl}/api/cart/get`,
-        {},
-        { headers: { token } }
+      const response = await axios.post(`${backendUrl}/api/cart/get`,{}, { headers: { Authorization: `Bearer ${token}` },}
       );
       if (response.data.success) {
         setCartItems(response.data.cartData);
@@ -155,16 +157,19 @@ const ShopContextProvider = (props) => {
       toast.error("Failed to fetch cart data");
     }
   };
+  
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
+    } else {
+      console.warn("No token found in localStorage");
     }
     getProductsData();
     getUserCart();
   }, [token]);
-
+  
   const contextValue = {
     products,
     currency,
@@ -175,6 +180,7 @@ const ShopContextProvider = (props) => {
     setShowSearch,
     addToCart,
     getCartCount,
+    getUserCart,
     cartItems,
     setCartItems,
     updateQuantity,

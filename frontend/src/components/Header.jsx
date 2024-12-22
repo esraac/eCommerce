@@ -71,8 +71,13 @@ export default function Header() {
             {token && (
               <>
                 <ul className='bg-white shadow-sm p-3 w-32 ring-1 ring-slate-900/15 rounded absolute right-0 hidden group-hover:flex flex-col'>
-                  <li onClick={() => navigate('/orders')} className='flexBetween cursor-pointer'>
+                  <li onClick={() => navigate('/userorders')} className='flexBetween cursor-pointer'>
                     <p>Orders</p>
+                    <TbArrowNarrowRight className='text-[19px] opacity-50' />
+                  </li>
+                  <hr className='my-2' />
+                  <li onClick={() => navigate('/account')} className='flexBetween cursor-pointer'>
+                    <p>Account</p>
                     <TbArrowNarrowRight className='text-[19px] opacity-50' />
                   </li>
                   <hr className='my-2' />

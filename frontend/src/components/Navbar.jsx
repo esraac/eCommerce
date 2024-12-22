@@ -11,7 +11,7 @@ export default function Navbar({containerStyles, toggleMenu, menuOpened}) {
     {to: '/', label:"Home", icon:<SiGooglehome />},
     {to: '/collection', label:"Collection", icon:<BsCollectionFill/>},
     {to: '/about', label:"About", icon:<SiAtlassian/>},
-    {to: '/mailto:support@shoplio.com', label:"Contact", icon:<SiMaildotcom/>},
+    {to: '/contact', label:"Contact", icon:<SiMaildotcom/>},
   ]
   
   return (
