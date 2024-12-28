@@ -1,10 +1,10 @@
-import express from  "express"
-import {submitReview, fetchReview} from "../controllers/reviewController.js"
+import express from "express";
+import { submitReview, fetchReview } from "../controllers/reviewController.js";
+import authUser from "../middleware/auth.js";
 
+const reviewRouter = express.Router();
 
-const reviewRouter = express.Router();  // 'router' yerine 'reviewRouter' kullanılmalı
-
-reviewRouter.post("/submit", submitReview)
-reviewRouter.get("/fetch", fetchReview)
+reviewRouter.post("/submit", authUser, submitReview);
+reviewRouter.get("/fetch", fetchReview);
 
 export default reviewRouter;

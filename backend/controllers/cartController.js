@@ -30,13 +30,11 @@ const addToCart = async (req, res) => {
     res.json({ success: true, message: "Sepete eklendi" });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Sepete eklenirken hata oluştu",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Sepete eklenirken hata oluştu",
+      error: error.message,
+    });
   }
 };
 
@@ -59,22 +57,18 @@ const updateCart = async (req, res) => {
       await userModel.findByIdAndUpdate(userId, { cartData });
       res.json({ success: true, message: "Sepet güncellendi" });
     } else {
-      res
-        .status(400)
-        .json({
-          success: false,
-          message: "Ürün veya beden sepette bulunamadı",
-        });
+      res.status(400).json({
+        success: false,
+        message: "Ürün veya beden sepette bulunamadı",
+      });
     }
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Sepet güncellenirken hata oluştu",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Sepet güncellenirken hata oluştu",
+      error: error.message,
+    });
   }
 };
 
@@ -93,13 +87,11 @@ const getUserCart = async (req, res) => {
     res.json({ success: true, cartData });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Sepet bilgileri alınırken hata oluştu",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Sepet bilgileri alınırken hata oluştu",
+      error: error.message,
+    });
   }
 };
 

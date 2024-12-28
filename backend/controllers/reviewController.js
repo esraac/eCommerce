@@ -6,25 +6,31 @@ const fetchReview = async (req, res) => {
     const { productId } = req.query;
 
     if (!productId) {
-      return res.status(400).json({ success: false, message: 'Product ID is required' });
+      return res
+        .status(400)
+        .json({ success: false, message: "Ürün ID'si gerekli" });
     }
 
     const reviews = await Review.find({ productId }).sort({ createdAt: -1 });
     res.json({ success: true, reviews });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Error fetching reviews' });
+    res
+      .status(500)
+      .json({ success: false, message: "Yorumlar alınırken hata oluştu" });
   }
 };
 
 // Yorum ekle
 const submitReview = async (req, res) => {
   try {
-    const { productId, name, comment, rating } = req.body;
-    console.log(req.body);
+    const { productId, comment, rating } = req.body;
+    const name = req.user.name; // Auth middleware'den kullanıcı adını al
 
-    if (!productId || !name || !comment || !rating) {
-      return res.status(400).json({ success: false, message: 'All fields are required' });
+    if (!productId || !comment || !rating) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Tüm alanlar gerekli" });
     }
 
     const newReview = new Review({
@@ -39,7 +45,9 @@ const submitReview = async (req, res) => {
     res.json({ success: true, reviews });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Error adding review' });
+    res
+      .status(500)
+      .json({ success: false, message: "Yorum eklenirken hata oluştu" });
   }
 };
 
