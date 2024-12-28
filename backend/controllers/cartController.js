@@ -2,11 +2,14 @@ import userModel from "../models/userModel.js";
 
 const addToCart = async (req, res) => {
   try {
-    const { userId, itemId, size } = req.body;
+    const { itemId, size } = req.body;
+    const userId = req.user._id; // Auth middleware'den gelen kullanıcı bilgisi
 
     const userData = await userModel.findById(userId);
     if (!userData) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Kullanıcı bulunamadı" });
     }
 
     let cartData = userData.cartData || {}; // Eğer cartData yoksa, boş bir obje başlat
@@ -24,20 +27,29 @@ const addToCart = async (req, res) => {
     // CartData'yı güncelle
     await userModel.findByIdAndUpdate(userId, { cartData });
 
-    res.json({ success: true, message: "Added to cart" });
+    res.json({ success: true, message: "Sepete eklendi" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Error adding to cart", error: error.message });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Sepete eklenirken hata oluştu",
+        error: error.message,
+      });
   }
 };
 
 const updateCart = async (req, res) => {
   try {
-    const { userId, itemId, size, quantity } = req.body;
+    const { itemId, size, quantity } = req.body;
+    const userId = req.user._id; // Auth middleware'den gelen kullanıcı bilgisi
 
     const userData = await userModel.findById(userId);
     if (!userData) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Kullanıcı bulunamadı" });
     }
 
     let cartData = userData.cartData || {}; // Eğer cartData yoksa, boş bir obje başlat
@@ -45,30 +57,49 @@ const updateCart = async (req, res) => {
     if (cartData[itemId] && cartData[itemId][size]) {
       cartData[itemId][size] = quantity;
       await userModel.findByIdAndUpdate(userId, { cartData });
-      res.json({ success: true, message: "Cart updated" });
+      res.json({ success: true, message: "Sepet güncellendi" });
     } else {
-      res.status(400).json({ success: false, message: "Item or size not found in cart" });
+      res
+        .status(400)
+        .json({
+          success: false,
+          message: "Ürün veya beden sepette bulunamadı",
+        });
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Error updating cart", error: error.message });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Sepet güncellenirken hata oluştu",
+        error: error.message,
+      });
   }
 };
 
 const getUserCart = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId = req.user._id; // Auth middleware'den gelen kullanıcı bilgisi
 
     const userData = await userModel.findById(userId);
     if (!userData) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Kullanıcı bulunamadı" });
     }
 
     const cartData = userData.cartData || {};
     res.json({ success: true, cartData });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Error fetching cart data", error: error.message });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Sepet bilgileri alınırken hata oluştu",
+        error: error.message,
+      });
   }
 };
 
