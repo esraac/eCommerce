@@ -1,21 +1,33 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { ShopContext } from '../context/ShopContext';
-import { FaStar, FaStarHalfStroke, FaTruckFast, FaHeart } from 'react-icons/fa6';
-import { TbShoppingBagPlus } from 'react-icons/tb';
-import Footer from '../components/Footer';
-import RelatedProducts from '../components/RelatedProducts';
+import React, { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { ShopContext } from "../context/ShopContext";
+import {
+  FaStar,
+  FaStarHalfStroke,
+  FaTruckFast,
+  FaHeart,
+} from "react-icons/fa6";
+import { TbShoppingBagPlus } from "react-icons/tb";
+import Footer from "../components/Footer";
+import RelatedProducts from "../components/RelatedProducts";
 
 export default function Product() {
   const { productId } = useParams();
-  const { products, currency, addToCart, fetchReviews, submitReview,getUserCart } = useContext(ShopContext);
+  const {
+    products,
+    currency,
+    addToCart,
+    fetchReviews,
+    submitReview,
+    getUserCart,
+  } = useContext(ShopContext);
   const [product, setProduct] = useState(null);
-  const [image, setImage] = useState('');
-  const [size, setSize] = useState('');
+  const [image, setImage] = useState("");
+  const [size, setSize] = useState("");
   const [reviews, setReviews] = useState([]);
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState("");
   const [newRating, setNewRating] = useState(5);
-  const [ratingFilter, setRatingFilter] = useState(0); 
+  const [ratingFilter, setRatingFilter] = useState(0);
   const [user, setUser] = useState(null);
 
   const fetchProductData = () => {
@@ -32,35 +44,28 @@ export default function Product() {
   };
 
   const handleReviewSubmit = async () => {
-    if (!user || !user.name) {
-      return alert('You need to be logged in to submit a review.');
-    }
-    
-    if (!newComment) return alert('Please write a comment.');
-  
+    if (!newComment) return alert("Please write a comment.");
+
     const review = {
       productId,
-      name: user.name,
       comment: newComment,
       rating: newRating,
     };
 
     try {
       await submitReview(productId, review);
-      setNewComment('');
+      setNewComment("");
       setNewRating(5);
       fetchProductReviews();
     } catch (error) {
-      console.error('Error submitting review: ', error);
+      console.error("Error submitting review: ", error);
     }
   };
-  
-  
 
   const calculateAverageRating = () => {
     if (!reviews) {
       return 0;
-  }
+    }
     const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
     return totalRating / reviews.length;
   };
@@ -68,7 +73,7 @@ export default function Product() {
   const averageRating = calculateAverageRating();
 
   const filteredReviews = ratingFilter
-    ? reviews.filter(review => review.rating === ratingFilter)
+    ? reviews.filter((review) => review.rating === ratingFilter)
     : reviews;
 
   useEffect(() => {
@@ -77,7 +82,7 @@ export default function Product() {
 
   useEffect(() => {
     if (productId) {
-      fetchProductReviews(); 
+      fetchProductReviews();
     }
   }, [productId]);
 
@@ -124,18 +129,23 @@ export default function Product() {
           <div className="flex-[1.5] rounded-2xl px-7">
             <h3 className="h3 !my-2.5 text-gray-800">{product.name}</h3>
             <div className="flex items-baseline gap-x-5">
-              <h3 className="h3 text-tertiary">{currency}{product.price}</h3>
+              <h3 className="h3 text-tertiary">
+                {currency}
+                {product.price}
+              </h3>
               <div className="flex items-center gap-x-2 text-secondary mb-2">
-              <div className="flex gap-x-1 text-secondary text-xl">
-                    {/* `averageRating` kontrol ediliyor */}
-                    {averageRating && averageRating > 0
-                      ? [...Array(Math.floor(averageRating))].map((_, i) => (
-                          <FaStar key={i} />
-                        ))
-                      : null}
-                    {averageRating % 1 > 0 && <FaStarHalfStroke />}
-                  </div>
-                <span className="text-sm">({reviews?.length > 0 ? reviews.length : 0})</span>
+                <div className="flex gap-x-1 text-secondary text-xl">
+                  {/* `averageRating` kontrol ediliyor */}
+                  {averageRating && averageRating > 0
+                    ? [...Array(Math.floor(averageRating))].map((_, i) => (
+                        <FaStar key={i} />
+                      ))
+                    : null}
+                  {averageRating % 1 > 0 && <FaStarHalfStroke />}
+                </div>
+                <span className="text-sm">
+                  ({reviews?.length > 0 ? reviews.length : 0})
+                </span>
               </div>
             </div>
             <p className="text-sm text-gray-600">{product.description}</p>
@@ -143,14 +153,18 @@ export default function Product() {
               <div className="flex gap-2">
                 {[...product.sizes]
                   .sort((a, b) => {
-                    const order = ['S', 'M', 'L', 'XL', 'XXL'];
+                    const order = ["S", "M", "L", "XL", "XXL"];
                     return order.indexOf(a) - order.indexOf(b);
                   })
                   .map((item, i) => (
                     <button
                       onClick={() => setSize(item)}
                       key={i}
-                      className={`${item === size ? 'bg-tertiary text-white' : 'border-gray-300'} border-[1.5px] border-tertiary h-8 w-10 bg-primary rounded-md text-sm`}
+                      className={`${
+                        item === size
+                          ? "bg-tertiary text-white"
+                          : "border-gray-300"
+                      } border-[1.5px] border-tertiary h-8 w-10 bg-primary rounded-md text-sm`}
                     >
                       {item}
                     </button>
@@ -162,7 +176,8 @@ export default function Product() {
                 onClick={() => addToCart(product._id, size)}
                 className="btn-dark w-1/2 flex items-center justify-center gap-x-2"
               >
-                Add to cart<TbShoppingBagPlus />
+                Add to cart
+                <TbShoppingBagPlus />
               </button>
               <button className="btn-light">
                 <FaHeart />
@@ -181,9 +196,9 @@ export default function Product() {
             </div>
           </div>
         </div>
-          <div className="mt-8">
+        <div className="mt-8">
           <h4 className="text-lg font-semibold">Reviews</h4>
-          
+
           {/* Rating Filter */}
           <div className="mb-4">
             <label className="mr-2">Filter by Rating:</label>
@@ -207,7 +222,9 @@ export default function Product() {
               <p className="text-gray-600">Henüz yorum eklenmemiş.</p>
             ) : (
               reviews
-                .filter((review) => (ratingFilter ? review.rating === ratingFilter : true))
+                .filter((review) =>
+                  ratingFilter ? review.rating === ratingFilter : true
+                )
                 .map((review, i) => (
                   <div key={i} className="border rounded-lg p-4 shadow-sm">
                     <h5 className="font-semibold">{`${review.firstName} ${review.lastName}`}</h5>
@@ -250,19 +267,18 @@ export default function Product() {
                   ))}
                 </select>
               </label>
-              <button 
+              <button
                 onClick={handleReviewSubmit}
-                className="btn-dark px-4 py-2 rounded-lg">Submit Review
+                className="btn-dark px-4 py-2 rounded-lg"
+              >
+                Submit Review
               </button>
             </div>
           </div>
         </div>
 
         <div className="mt-8">
-          <RelatedProducts
-            category={product.category}
-            productId={productId}
-          />
+          <RelatedProducts category={product.category} productId={productId} />
         </div>
       </div>
       <Footer />

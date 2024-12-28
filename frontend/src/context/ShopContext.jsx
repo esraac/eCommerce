@@ -27,7 +27,12 @@ const ShopContextProvider = (props) => {
       const response = await axios.post(
         `${backendUrl}/api/reviews/submit`,
         { productId, ...review },
-        { headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` } }
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (response.data.success) {
