@@ -30,6 +30,7 @@ export default function Contact() {
         email,
         message,
       });
+      console.log("Backend URL:", backendUrl);
       if (response.data.success) {
         toast.success("Message sent successfully!");
         setName('');
@@ -40,8 +41,7 @@ export default function Contact() {
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      const errorMessage = error.response?.data?.message || "Failed to send message. Please try again.";
-      toast.error(errorMessage);
+      console.error("Error details:", error.response?.data)
     }
     setLoading(false);
   };

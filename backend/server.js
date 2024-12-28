@@ -19,7 +19,8 @@ connectCloudinary()
 
 //middlware
 app.use(express.json())
-app.use(cors({ origin: 'http://localhost:5173' }))
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:3000'], // Gerekirse tüm frontend adreslerini ekleyin
+    methods: ['GET', 'POST', 'PUT', 'DELETE']}))
 
 //api endpoints
 app.use('/api/user', userRouter)

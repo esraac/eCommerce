@@ -7,6 +7,11 @@ export default defineConfig({
   optimizeDeps: {
     include: ["react-toastify"],
   },
+  server: {
+    proxy: {
+      '/api': 'http://localhost:4000',
+    },
+  },
 })
 
 

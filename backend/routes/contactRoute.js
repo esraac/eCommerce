@@ -4,6 +4,7 @@ import nodemailer from "nodemailer";
 const contactRouter = express.Router();
 
 contactRouter.post('/', async (req, res) => {
+  console.log("Request Body:", req.body);
   const { name, email, message } = req.body;
 
   if (!name || !email || !message) {
@@ -15,7 +16,7 @@ contactRouter.post('/', async (req, res) => {
       service: 'Gmail',
       auth: {
         user: 'shoplio.destek@gmail.com',
-        pass: 'shoplio123',
+        pass: 'hjfn ttni sbrj fwwo',
       },
     });
   
@@ -29,8 +30,9 @@ contactRouter.post('/', async (req, res) => {
     await transporter.sendMail(mailOptions);
     res.status(200).json({ success: true, message: "Email sent successfully" });
   } catch (error) {
-    console.error("Error sending email: ", error.message); // Hata mesajını yazdır
-    res.status(500).json({ success: false, message: "Failed to send email" });
+    console.error("Error sending email: ", error.message);
+  console.error("Stack Trace: ", error.stack);
+  res.status(500).json({ success: false, message: "Failed to send email" });
   }
   
 });
